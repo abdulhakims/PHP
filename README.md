@@ -186,3 +186,207 @@ echo "the average of $n1, $n2, $n3 and $n4 is $ave <br>";
 
 </body>
 </html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payroll Calculator</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f4f4f4; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+        }
+        .container { 
+            background: #fff; 
+            border-radius: 10px; 
+            width: 380px; 
+            box-shadow: 0 0 12px rgba(0,0,0,0.2); 
+            overflow: hidden;
+        }
+        .header { 
+            background: #007BFF; 
+            color: white; 
+            text-align: center; 
+            padding: 12px; 
+            font-size: 20px; 
+            font-weight: bold; 
+        }
+        form { 
+            padding: 20px; 
+        }
+        label { 
+            display: block; 
+            margin: 10px 0 5px; 
+            font-weight: bold; 
+        }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            margin-bottom: 10px; 
+            font-size: 14px; 
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #007BFF; 
+            color: #fff; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background: #0056b3; 
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">Payroll Calculator</div>
+    <form method="POST" action="payslip.php">
+        <label>Employee Name</label>
+        <input type="text" name="name" placeholder="Enter employee name" required>
+
+        <label>Total Days of Work</label>
+        <input type="number" name="days" placeholder="Enter days worked" required>
+
+        <label>Daily Rate</label>
+        <input type="number" name="rate" placeholder="Enter daily rate" required>
+
+        <label>Cash Advance</label>
+        <input type="number" name="advance" placeholder="Enter cash advance" value="0">
+
+        <button type="submit">Generate Payslip</button>
+    </form>
+</div>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Payslip</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f4f4f4; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+        }
+        .container { 
+            background: #fff; 
+            border-radius: 8px; 
+            width: 420px; 
+            box-shadow: 0 0 12px rgba(0,0,0,0.2); 
+            overflow: hidden;
+        }
+        .header { 
+            background: #2e7d32; 
+            color: white; 
+            padding: 12px; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: bold; 
+        }
+        .details { 
+            padding: 15px 20px; 
+            font-size: 15px; 
+        }
+        .details p { 
+            margin: 6px 0; 
+        }
+        .details p b { 
+            display: inline-block; 
+            width: 160px; 
+        }
+        .netpay { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: green; 
+            margin-top: 10px; 
+        }
+        .buttons { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            padding: 12px; 
+            border-top: 1px solid #ddd; 
+        }
+        button { 
+            background: #f8f9fa; 
+            border: 1px solid #ccc; 
+            padding: 8px 16px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background: #e0e0e0; 
+        }
+        /* 🔹 Back button specific style */
+        .back-btn {
+            background: gray;
+            color: white;
+            border: none;
+        }
+        .back-btn:hover {
+            background: #555; /* darker gray on hover */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">Employee Payslip</div>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = $_POST['name'];
+        $days = $_POST['days'];
+        $rate = $_POST['rate'];
+        $advance = $_POST['advance'];
+
+        $gross = $days * $rate;
+
+        $tax = $gross * 0.02;
+        $sss = $gross * 0.015;
+        $pagibig = 50;
+        $total_deductions = $tax + $sss + $pagibig + $advance;
+
+        $net = $gross - $total_deductions;
+
+        echo "<div class='details'>";
+        echo "<p><b>Employee Name:</b> $name</p>";
+        echo "<p><b>Total Days Worked:</b> $days</p>";
+        echo "<p><b>Daily Rate:</b> ₱".number_format($rate,2)."</p>";
+        echo "<hr>";
+        echo "<p><b>Gross Pay:</b> ₱".number_format($gross,2)."</p>";
+        echo "<p><b>Tax (2%):</b> ₱".number_format($tax,2)."</p>";
+        echo "<p><b>SSS (1.5%):</b> ₱".number_format($sss,2)."</p>";
+        echo "<p><b>Pag-IBIG:</b> ₱".number_format($pagibig,2)."</p>";
+        echo "<p><b>Cash Advance:</b> ₱".number_format($advance,2)."</p>";
+        echo "<hr>";
+        echo "<p><b>Total Deductions:</b> ₱".number_format($total_deductions,2)."</p>";
+        echo "<p class='netpay'>Net Pay: ₱".number_format($net,2)."</p>";
+        echo "</div>";
+    }
+    ?>
+    <div class="buttons">
+        <form action="ps.php">
+            <button type="submit" class="back-btn">Back</button>
+        </form>
+        <button onclick="window.print()">Print Payslip</button>
+    </div>
+</div>
+</body>
+</html>
